@@ -15,7 +15,7 @@ Kişisel finansal yönetim için tasarlanmış kullanıcı dostu bir gelir-gider
 ## Ekran Görüntüleri
 
 ![1.png](EkranResimleri/1.png)
-*Ana Sayfa*
+
 
 ![2.png](EkranResimleri/2.png)
 
