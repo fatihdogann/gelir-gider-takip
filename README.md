@@ -14,34 +14,34 @@ Kişisel finansal yönetim için tasarlanmış kullanıcı dostu bir gelir-gider
 
 ## Ekran Görüntüleri
 
-![Ana Sayfa](EkranResimleri/1.png)
+![1.png](EkranResimleri/1.png)
 *Ana Sayfa*
 
-![Giriş Sayfası](EkranResimleri/2.png)
+![2.png](EkranResimleri/2.png)
 *Giriş Sayfası*
 
-![Kayıt Sayfası](EkranResimleri/3.png)
+![3.png](EkranResimleri/3.png)
 *Kayıt Sayfası*
 
-![Şifre Sıfırlama](EkranResimleri/4.png)
+![4.png](EkranResimleri/4.png)
 *Şifre Sıfırlama*
 
-![Hakkında Sayfası](EkranResimleri/5.png)
+![5.png](EkranResimleri/5.png)
 *Hakkında Sayfası*
 
-![İletişim Sayfası](EkranResimleri/6.png)
+![6.png](EkranResimleri/6.png)
 *İletişim Sayfası*
 
-![Kullanıcı Paneli](EkranResimleri/7.png)
+![7.png](EkranResimleri/7.png)
 *Kullanıcı Paneli*
 
-![Gelir-Gider Takip](EkranResimleri/8.png)
+![8.png](EkranResimleri/8.png)
 *Gelir-Gider Takip Sayfası*
 
-![Grafikler](EkranResimleri/9.png)
+![9.png](EkranResimleri/9.png)
 *Aylık Trend Grafiği*
 
-![Mobil Uyumluluk](EkranResimleri/10.png)
+![10.png](EkranResimleri/10.png)
 *Mobil Cihazlarda Görünüm*
 
 ## Teknolojiler
