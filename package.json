@@ -1,0 +1,22 @@
+{
+  "name": "gelir-gider-takip",
+  "version": "1.0.0",
+  "description": "Kişisel finansal yönetim için tasarlanmış kullanıcı dostu bir gelir-gider takip uygulaması",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gelir-gider",
+    "finansal-yonetim",
+    "javascript",
+    "html",
+    "css"
+  ],
+  "author": "Gelir Gider Takip Ekibi",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

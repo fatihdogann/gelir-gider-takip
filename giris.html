@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap | Finansal Takip</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+</head>
+<body>
+    <!-- Test Hesabı Bilgisi (tıklanabilir) -->
+    <div class="test-account" id="testHesapBilgi">
+        <i class="bi bi-info-circle me-1"></i> Test Hesabı: kullanici: test / şifre: 123456
+    </div>
+
+    <div class="auth-container py-5">
+        <!-- Giriş Kartı -->
+        <div class="card auth-card" id="girisCard">
+            <div class="auth-header">
+                <div class="app-logo">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+                <div class="brand-name">Finansal Takip</div>
+                <div class="brand-tagline">Gelir ve giderlerinizi kolayca yönetin</div>
+            </div>
+            
+            <div class="card-body">
+                <h4 class="text-center mb-4">Giriş Yap</h4>
+                
+                <form id="girisForm">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="kullaniciAdiEmail" placeholder="Kullanıcı adı veya E-posta" required>
+                        <label for="kullaniciAdiEmail"><i class="bi bi-person me-1"></i> Kullanıcı adı veya E-posta</label>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="sifre" placeholder="Şifre" required>
+                            <label for="sifre"><i class="bi bi-lock me-1"></i> Şifre</label>
+                        </div>
+                        <span class="input-group-text" id="sifreGoster">
+                            <i class="bi bi-eye-slash"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="beniHatirla">
+                            <label class="form-check-label" for="beniHatirla">
+                                Beni hatırla
+                            </label>
+                        </div>
+                        <a href="sifre-sifirla.html" class="btn-link">Şifremi unuttum</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 py-2">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Giriş Yap
+                    </button>
+                </form>
+                
+                <div class="divider">
+                    <div class="divider-line"></div>
+                    <div class="divider-text">Hesabınız yok mu?</div>
+                    <div class="divider-line"></div>
+                </div>
+                
+                <a href="kayit.html" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-person-plus me-2"></i>Yeni Hesap Oluştur
+                </a>
+                
+                <div class="text-center mt-4">
+                    <a href="index.html" class="btn-link">
+                        <i class="bi bi-arrow-left me-1"></i> Anasayfaya Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            // Yerel Storage'ı temizle
+            localStorage.removeItem('currentPage');
+            
+            // Test Hesabı
+            const testHesabiKur = () => {
+                console.log("Test hesabı oluşturuluyor...");
+                
+                const kullanicilar = JSON.parse(localStorage.getItem('kullanicilar')) || [];
+                
+                // Test hesabının var olup olmadığını kontrol et
+                const testHesapVar = kullanicilar.some(k => k.kullaniciAdi === 'test');
+                
+                if (!testHesapVar) {
+                    // Test hesabı oluştur
+                    const testHesap = {
+                        adSoyad: 'Test Kullanıcı',
+                        kullaniciAdi: 'test',
+                        email: 'test@gelirgider.com',
+                        sifre: '123456',
+                        kayitTarihi: new Date().toISOString(),
+                        sonGirisTarihi: new Date().toISOString()
+                    };
+                    
+                    kullanicilar.push(testHesap);
+                    localStorage.setItem('kullanicilar', JSON.stringify(kullanicilar));
+                    console.log('Test hesabı oluşturuldu.');
+                } else {
+                    console.log('Test hesabı zaten mevcut.');
+                }
+            };
+            
+            // Kullanıcı giriş yapmış mı kontrolü
+            const aktifKullaniciKontrol = () => {
+                const aktifKullanici = JSON.parse(localStorage.getItem('aktifKullanici'));
+                if (aktifKullanici) {
+                    // Zaten giriş yapılmış, anasayfaya yönlendir
+                    window.location.href = 'index.html';
+                }
+            };
+            
+            // İşlemleri çalıştır
+            testHesabiKur();
+            aktifKullaniciKontrol();
+            
+            // Test hesabı bilgisine tıklama
+            const testHesapBilgi = document.getElementById('testHesapBilgi');
+            if (testHesapBilgi) {
+                testHesapBilgi.addEventListener('click', function() {
+                    document.getElementById('kullaniciAdiEmail').value = 'test';
+                    document.getElementById('sifre').value = '123456';
+                });
+            }
+            
+            // Şifre göster/gizle butonu
+            const sifreGoster = document.getElementById('sifreGoster');
+            if (sifreGoster) {
+                sifreGoster.addEventListener('click', function() {
+                    const sifreInput = document.getElementById('sifre');
+                    const icon = this.querySelector('i');
+                    
+                    if (sifreInput.type === 'password') {
+                        sifreInput.type = 'text';
+                        icon.classList.replace('bi-eye-slash', 'bi-eye');
+                    } else {
+                        sifreInput.type = 'password';
+                        icon.classList.replace('bi-eye', 'bi-eye-slash');
+                    }
+                });
+            }
+            
+            // Giriş formu
+            const girisForm = document.getElementById('girisForm');
+            if (girisForm) {
+                girisForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Form değerlerini al
+                    const kullaniciAdiEmail = document.getElementById('kullaniciAdiEmail').value.trim();
+                    const sifre = document.getElementById('sifre').value;
+                    const beniHatirla = document.getElementById('beniHatirla').checked;
+                    
+                    if (!kullaniciAdiEmail || !sifre) {
+                        alert('Lütfen kullanıcı adı/e-posta ve şifrenizi girin.');
+                        return;
+                    }
+                    
+                    // Test hesabı için özel kontrol
+                    if (kullaniciAdiEmail === 'test' && sifre === '123456') {
+                        console.log("Test hesabı girişi yapılıyor...");
+                        
+                        // Test hesabı bilgilerini al
+                        const kullanicilar = JSON.parse(localStorage.getItem('kullanicilar')) || [];
+                        const testHesap = kullanicilar.find(k => k.kullaniciAdi === 'test');
+                        
+                        if (testHesap) {
+                            // Test hesabı varsa giriş yap
+                            localStorage.setItem('aktifKullanici', JSON.stringify(testHesap));
+                            alert('Test hesabı ile giriş yapıldı. Anasayfaya yönlendiriliyorsunuz.');
+                            window.location.href = 'index.html';
+                            return;
+                        } else {
+                            // Test hesabı yoksa oluştur ve giriş yap
+                            testHesabiKur();
+                            const yeniKullanicilar = JSON.parse(localStorage.getItem('kullanicilar')) || [];
+                            const yeniTestHesap = yeniKullanicilar.find(k => k.kullaniciAdi === 'test');
+                            
+                            if (yeniTestHesap) {
+                                localStorage.setItem('aktifKullanici', JSON.stringify(yeniTestHesap));
+                                alert('Test hesabı oluşturuldu ve giriş yapıldı. Anasayfaya yönlendiriliyorsunuz.');
+                                window.location.href = 'index.html';
+                                return;
+                            }
+                        }
+                    }
+                    
+                    // Normal kullanıcı girişi
+                    const kullanicilar = JSON.parse(localStorage.getItem('kullanicilar')) || [];
+                    const kullanici = kullanicilar.find(k => 
+                        (k.kullaniciAdi === kullaniciAdiEmail || k.email === kullaniciAdiEmail) && 
+                        k.sifre === sifre
+                    );
+                    
+                    if (kullanici) {
+                        // Giriş başarılı
+                        kullanici.sonGirisTarihi = new Date().toISOString();
+                        kullanici.hatirla = beniHatirla;
+                        
+                        // Kullanıcı bilgilerini güncelle
+                        const index = kullanicilar.findIndex(k => k.kullaniciAdi === kullanici.kullaniciAdi);
+                        if (index !== -1) {
+                            kullanicilar[index] = kullanici;
+                            localStorage.setItem('kullanicilar', JSON.stringify(kullanicilar));
+                        }
+                        
+                        localStorage.setItem('aktifKullanici', JSON.stringify(kullanici));
+                        alert('Giriş başarılı! Anasayfaya yönlendiriliyorsunuz.');
+                        window.location.href = 'index.html';
+                    } else {
+                        // Giriş başarısız
+                        alert('Kullanıcı adı/e-posta veya şifre hatalı.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

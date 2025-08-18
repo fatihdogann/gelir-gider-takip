@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gelir Gider Takip Uygulaması şifre sıfırlama sayfası. Şifrenizi unuttunuz mu? Hesabınıza tekrar erişim sağlayın.">
+    <title>Şifre Sıfırla - Gelir Gider Takip Uygulaması</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+    <style>
+        /* Özel stiller */
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .form-control:focus {
+            border-color: var(--warning-color);
+            box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+        }
+        
+        .btn-warning {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
+        }
+        
+        .key-icon {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .key-icon:hover {
+            transform: rotate(15deg);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigasyon Menüsü -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <div class="placeholder-logo me-2">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+                <span>Gelir-Gider Takip</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Anasayfa</a></li>
+                    <li class="nav-item" id="gelirGiderLink"><a class="nav-link" href="gelir-gider.html">Gelir-Gider</a></li>
+                    <li class="nav-item"><a class="nav-link" href="hakkinda.html">Hakkında</a></li>
+                    <li class="nav-item"><a class="nav-link" href="iletisim.html">İletişim</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto" id="userNavArea">
+                    <!-- Bu alan JavaScript ile doldurulacak -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-warning text-dark text-center py-3">
+                        <h2 class="h4 mb-0">Şifre Sıfırlama</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <div class="key-icon mb-3">
+                                <i class="bi bi-key-fill text-warning display-4"></i>
+                            </div>
+                            <p class="mt-3">Şifrenizi mi unuttunuz? Endişelenmeyin! E-posta adresinizi girin, size şifre sıfırlama talimatlarını içeren bir bağlantı göndereceğiz.</p>
+                        </div>
+                        
+                        <div id="mesajKutusu" class="alert d-none" role="alert"></div>
+                        
+                        <form id="sifreSifirlaForm">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="bi bi-envelope me-1"></i> E-posta Adresiniz
+                                </label>
+                                <input type="email" id="email" class="form-control" placeholder="Hesabınızla ilişkili e-posta adresini girin" required>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-warning w-100 py-2 mb-3">
+                                    <i class="bi bi-envelope-fill me-1"></i> Sıfırlama Bağlantısı Gönder
+                                </button>
+                            </div>
+                            
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border text-warning d-none" id="yuklemeSpinner" role="status">
+                                    <span class="visually-hidden">Yükleniyor...</span>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="text-center">
+                            <a href="giris.html" class="text-decoration-none">
+                                <i class="bi bi-arrow-left me-1"></i> Giriş sayfasına dön
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4 shadow-sm border-0">
+                    <div class="card-body">
+                        <h4 class="h5 mb-3"><i class="bi bi-info-circle me-2"></i>Bilgi</h4>
+                        <p class="small mb-0">Şifre sıfırlama bağlantısı 24 saat boyunca geçerlidir. Eğer e-posta almadıysanız, lütfen spam klasörünüzü kontrol edin veya tekrar deneyin.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5 class="mb-3">Gelir-Gider Takip</h5>
+                    <p class="small mb-3">Finansal durumunuzu kolayca takip edin, geleceğinizi güvenle planlayın. Tamamen ücretsiz gelir-gider takip uygulaması.</p>
+                    <div class="social-icons">
+                        <a href="https://linkedin.com" target="_blank" class="me-2"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://www.instagram.com" target="_blank" class="me-2"><i class="bi bi-instagram"></i></a>
+                        <a href="mailto:info@gelirgider.com" class="me-2"><i class="bi bi-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5 class="mb-3">Hızlı Bağlantılar</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="index.html" class="text-decoration-none text-light"><i class="bi bi-chevron-right me-1"></i> Anasayfa</a></li>
+                        <li class="mb-2"><a href="gelir-gider.html" class="text-decoration-none text-light"><i class="bi bi-chevron-right me-1"></i> Gelir-Gider</a></li>
+                        <li class="mb-2"><a href="hakkinda.html" class="text-decoration-none text-light"><i class="bi bi-chevron-right me-1"></i> Hakkında</a></li>
+                        <li class="mb-2"><a href="iletisim.html" class="text-decoration-none text-light"><i class="bi bi-chevron-right me-1"></i> İletişim</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-4">
+                    <h5 class="mb-3">Bülten</h5>
+                    <p class="small mb-3">Yeni özelliklerden ve güncellemelerden haberdar olmak için bültenimize abone olun.</p>
+                    <form class="d-flex">
+                        <input type="email" class="form-control" placeholder="E-posta adresiniz">
+                        <button type="submit" class="btn btn-primary ms-2">Abone Ol</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Telif Hakkı -->
+            <div class="text-center mt-4 pt-4 border-top border-secondary">
+                <p class="mb-0">© 2024 Gelir Gider Takip Uygulaması | Tüm hakları saklıdır.</p>
+                <p class="developer-signature">Geliştirici: <a href="mailto:info@gelirgider.com">Gelir Gider Takip Ekibi</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="main.js"></script>
+    <script src="sifre-sifirla.js"></script>
+</body>
+</html>

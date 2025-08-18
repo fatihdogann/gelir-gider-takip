@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kişisel gelir ve giderlerinizi takip edin, finansal durumunuzu kontrol altında tutun.">
+    <title>Gelir-Gider Takip | Finansal Yönetim</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+    <style>
+        /* Gelir-gider sayfası için ek stiller */
+        .hero-banner h1, 
+        .hero-banner p.lead {
+            color: #ffffff !important; /* Beyaz rengi zorla */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Okunabilirlik için gölge ekle */
+        }
+    
+        .chart-container {
+            min-height: 250px;
+            position: relative;
+        }
+    
+        .card-header.bg-primary,
+        .card-header.bg-success,
+        .card-header.bg-info,
+        .card-header.bg-dark {
+            color: white;
+        }
+    
+        /* Boş grafik mesajı için stil */
+        .empty-chart-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #adb5bd;
+        }
+    
+        /* Gri metinleri düzelt */
+        .text-muted {
+            color: #ffffff !important; /* Koyu arka planlarda beyaz */
+        }
+        .card-body .text-muted,
+        .table .text-muted {
+            color: #6c757d !important; /* Kartlar ve tablolarda gri kalsın */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigasyon Menüsü -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <div class="placeholder-logo me-2">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+                <span>Gelir-Gider Takip</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Anasayfa</a></li>
+                    <li class="nav-item" id="gelirGiderLink"><a class="nav-link active" href="gelir-gider.html">Gelir-Gider</a></li>
+                    <li class="nav-item"><a class="nav-link" href="hakkinda.html">Hakkında</a></li>
+                    <li class="nav-item"><a class="nav-link" href="iletisim.html">İletişim</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto" id="userNavArea">
+                    <!-- Kullanıcı bilgisi JavaScript ile doldurulacak -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ana İçerik -->
+    <header class="hero-banner py-4 mb-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="mb-3 text-white">Finansal Takip Paneli</h1>
+                    <p class="lead mb-0 text-white">Gelir ve giderlerinizi kontrol altında tutun, finansal hedeflerinize ulaşın.</p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex justify-content-lg-end mt-3 mt-lg-0">
+                        <button type="button" class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#yardimModal">
+                            <i class="bi bi-question-circle me-1"></i> Yardım
+                        </button>
+                        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#filtreleModal">
+                            <i class="bi bi-funnel me-1"></i> Filtrele
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mb-5">
+        <!-- Özet Bilgiler -->
+        <div class="row mb-5">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100 summary-card income-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="summary-icon income-icon me-3">
+                                <i class="bi bi-arrow-down-circle"></i>
+                            </div>
+                            <div>
+                                <h5 class="card-title mb-0">Toplam Gelir</h5>
+                                <small class="text-muted">Tüm zamanlar</small>
+                            </div>
+                        </div>
+                        <h2 id="toplamGelir" class="display-5 fw-bold mb-0">0.00 ₺</h2>
+                        <div class="progress mt-3" style="height: 5px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100 summary-card expense-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="summary-icon expense-icon me-3">
+                                <i class="bi bi-arrow-up-circle"></i>
+                            </div>
+                            <div>
+                                <h5 class="card-title mb-0">Toplam Gider</h5>
+                                <small class="text-muted">Tüm zamanlar</small>
+                            </div>
+                        </div>
+                        <h2 id="toplamGider" class="display-5 fw-bold mb-0">0.00 ₺</h2>
+                        <div class="progress mt-3" style="height: 5px;">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12 mb-4">
+                <div class="card border-0 shadow-sm h-100 summary-card balance-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="summary-icon balance-icon me-3">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
+                            <div>
+                                <h5 class="card-title mb-0">Mevcut Bakiye</h5>
+                                <small class="text-muted">Gelir - Gider</small>
+                            </div>
+                        </div>
+                        <h2 id="mevcutBakiye" class="display-5 fw-bold mb-0">0.00 ₺</h2>
+                        <div class="mt-3">
+                            <span id="bakiyeDurumu" class="badge bg-success">Pozitif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Gelir-Gider Ekle/Düzenle Kartı -->
+            <div class="col-lg-4 col-md-12 mb-4 order-lg-1 order-2">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 id="formBaslik" class="card-title mb-0"><i class="bi bi-plus-circle me-2"></i>Gelir/Gider Ekle</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="gelirGiderForm" data-mode="add">
+                            <div class="mb-3">
+                                <label for="tarih" class="form-label">
+                                    <i class="bi bi-calendar3 me-1"></i> Tarih
+                                </label>
+                                <input type="date" id="tarih" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tur" class="form-label">
+                                    <i class="bi bi-tag me-1"></i> Tür
+                                </label>
+                                <select id="tur" class="form-select" required>
+                                    <option value="Gelir">Gelir</option>
+                                    <option value="Gider">Gider</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="kategori" class="form-label">
+                                    <i class="bi bi-folder me-1"></i> Kategori
+                                </label>
+                                <select id="kategori" class="form-select" required>
+                                    <!-- Kategoriler JavaScript ile dinamik olarak doldurulacak -->
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="miktar" class="form-label">
+                                    <i class="bi bi-cash me-1"></i> Miktar
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" id="miktar" class="form-control" placeholder="Örn: 100" required step="0.01" min="0.01">
+                                    <span class="input-group-text">₺</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="aciklama" class="form-label">
+                                    <i class="bi bi-card-text me-1"></i> Açıklama (Opsiyonel)
+                                </label>
+                                <textarea id="aciklama" class="form-control" placeholder="İşlem detaylarını yazabilirsiniz" rows="2"></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle me-1"></i> Ekle
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Son İşlemler -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="card-title mb-0"><i class="bi bi-clock-history me-2"></i>Son İşlemler</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush" id="sonIslemlerListesi">
+                            <!-- İşlemler JavaScript ile doldurulacak -->
+                            <li class="list-group-item text-center p-3 text-muted">
+                                <i class="bi bi-info-circle me-1"></i> Henüz işlem bulunmamaktadır.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gelir-Gider Tablosu ve Grafikler -->
+            <div class="col-lg-8 col-md-12 mb-4 order-lg-2 order-1">
+                <!-- İşlem Listesi Tablosu -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0"><i class="bi bi-list-ul me-2"></i>İşlem Listesi</h5>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-light" onclick="islemleriExcelOlarakDisa()">
+                                <i class="bi bi-file-earmark-excel me-1"></i> Excel
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-light ms-2" onclick="islemleriPDFOlarakDisa()">
+                                <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Tarih</th>
+                                        <th>Kategori</th>
+                                        <th>Miktar</th>
+                                        <th>Tür</th>
+                                        <th class="text-end">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gelirGiderTablosu">
+                                    <!-- Dinamik veriler buraya eklenecek -->
+                                    <tr>
+                                        <td colspan="5" class="text-center py-3 text-muted">
+                                            <i class="bi bi-info-circle me-1"></i> Henüz işlem bulunmamaktadır.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grafikler -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="card-title mb-0"><i class="bi bi-pie-chart-fill me-2"></i>Gelir-Gider Dağılımı</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="gelirGiderGrafik"></canvas>
+                                    <div id="gelirGiderBosGrafik" class="empty-chart-message d-none">
+                                        <i class="bi bi-bar-chart-line display-4 d-block mb-2"></i>
+                                        Grafik göstermek için veri bulunmamaktadır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="card-title mb-0"><i class="bi bi-bar-chart-fill me-2"></i>Kategori Dağılımı</h5>
+                            </div>
+                            <div class="card-body">
+                                <div>
+                                    <select id="kategoriTipSecici" class="form-select form-select-sm mb-3">
+                                        <option value="Gider">Gider Kategorileri</option>
+                                        <option value="Gelir">Gelir Kategorileri</option>
+                                    </select>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="kategoriDagilimGrafik"></canvas>
+                                    <div id="kategoriDagilimBosGrafik" class="empty-chart-message d-none">
+                                        <i class="bi bi-pie-chart display-4 d-block mb-2"></i>
+                                        Kategori dağılımı için veri bulunmamaktadır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="card-title mb-0"><i class="bi bi-graph-up me-2"></i>Aylık Gelir-Gider Trendi</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="aylikTrendGrafik"></canvas>
+                                    <div id="aylikTrendBosGrafik" class="empty-chart-message d-none">
+                                        <i class="bi bi-graph-up-arrow display-4 d-block mb-2"></i>
+                                        Aylık trend verileri göstermek için yeterli işlem bulunmamaktadır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Yardım Modalı -->
+    <div class="modal fade" id="yardimModal" tabindex="-1" aria-labelledby="yardimModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="yardimModalLabel">
+                        <i class="bi bi-question-circle me-1"></i> Yardım
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="accordion" id="yardimAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="baslik1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#icerik1" aria-expanded="true" aria-controls="icerik1">
+                                    Nasıl gelir veya gider eklerim?
+                                </button>
+                            </h2>
+                            <div id="icerik1" class="accordion-collapse collapse show" aria-labelledby="baslik1" data-bs-parent="#yardimAccordion">
+                                <div class="accordion-body">
+                                    <p>Gelir veya gider eklemek için, sayfanın sol tarafındaki formu kullanabilirsiniz:</p>
+                                    <ol>
+                                        <li>Tarih seçin</li>
+                                        <li>Tür olarak "Gelir" veya "Gider" seçin</li>
+                                        <li>Uygun kategoriyi seçin</li>
+                                        <li>Miktar bilgisini girin</li>
+                                        <li>İsterseniz açıklama ekleyin</li>
+                                        <li>"Ekle" butonuna tıklayın</li>
+                                    </ol>
+                                    <p>İşlem eklendikten sonra tabloda ve grafiklerde otomatik olarak görüntülenecektir.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="baslik2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#icerik2" aria-expanded="false" aria-controls="icerik2">
+                                    Eklediğim bir işlemi nasıl düzenleyebilirim?
+                                </button>
+                            </h2>
+                            <div id="icerik2" class="accordion-collapse collapse" aria-labelledby="baslik2" data-bs-parent="#yardimAccordion">
+                                <div class="accordion-body">
+                                    <p>Var olan bir işlemi düzenlemek için:</p>
+                                    <ol>
+                                        <li>İşlem tablosundaki ilgili satırın en sağındaki "Düzenle" butonuna tıklayın</li>
+                                        <li>İşlem bilgileri forma yüklenecektir</li>
+                                        <li>İstediğiniz değişiklikleri yapın</li>
+                                        <li>"Güncelle" butonuna tıklayın</li>
+                                    </ol>
+                                    <p>Değişiklikler anında tabloya ve grafiklere yansıyacaktır.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="baslik3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#icerik3" aria-expanded="false" aria-controls="icerik3">
+                                    İşlemlerimi nasıl dışa aktarabilirim?
+                                </button>
+                            </h2>
+                            <div id="icerik3" class="accordion-collapse collapse" aria-labelledby="baslik3" data-bs-parent="#yardimAccordion">
+                                <div class="accordion-body">
+                                    <p>İşlemlerinizi Excel veya PDF formatında dışa aktarabilirsiniz:</p>
+                                    <ul>
+                                        <li>Tablonun üst kısmındaki "Excel" butonuna tıklayarak Excel dosyası olarak kaydedebilirsiniz.</li>
+                                        <li>Tablonun üst kısmındaki "PDF" butonuna tıklayarak PDF dosyası olarak kaydedebilirsiniz.</li>
+                                    </ul>
+                                    <p>Dışa aktarılan dosyalar, tablodaki tüm işlemlerinizi içerecektir.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filtreleme Modalı -->
+    <div class="modal fade" id="filtreleModal" tabindex="-1" aria-labelledby="filtreleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="filtreleModalLabel">
+                        <i class="bi bi-funnel me-1"></i> İşlemleri Filtrele
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="filtreForm">
+                        <div class="mb-3">
+                            <label for="tarihBaslangic" class="form-label">Başlangıç Tarihi</label>
+                            <input type="date" id="tarihBaslangic" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="tarihBitis" class="form-label">Bitiş Tarihi</label>
+                            <input type="date" id="tarihBitis" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="filtreTur" class="form-label">Tür</label>
+                            <select id="filtreTur" class="form-select">
+                                <option value="">Tümü</option>
+                                <option value="Gelir">Gelir</option>
+                                <option value="Gider">Gider</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="filtreKategori" class="form-label">Kategori</label>
+                            <select id="filtreKategori" class="form-select">
+                                <option value="">Tümü</option>
+                                <!-- Kategoriler JavaScript ile doldurulacak -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Miktar Aralığı</label>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="number" id="minMiktar" class="form-control" placeholder="Min" min="0">
+                                </div>
+                                <div class="col">
+                                    <input type="number" id="maxMiktar" class="form-control" placeholder="Max" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="filtreleriSifirla()">Sıfırla</button>
+                    <button type="button" class="btn btn-primary" onclick="islemleriFiltrele()">Filtrele</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5 class="mb-3">Gelir-Gider Takip</h5>
+                    <p class="small mb-3">Finansal durumunuzu kolayca takip edin, geleceğinizi güvenle planlayın. Tamamen ücretsiz gelir-gider takip uygulaması.</p>
+                    <div class="social-icons">
+                        <a href="https://linkedin.com" target="_blank" class="me-2"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://www.instagram.com" target="_blank" class="me-2"><i class="bi bi-instagram"></i></a>
+                        <a href="mailto:info@gelirgider.com" class="me-2"><i class="bi bi-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5 class="mb-3">Hızlı Bağlantılar</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="index.html" class="text-decoration-none text-light"><i class="bi bi-chevron-right me-1"></i> Anasayfa</a></li>
+                        <li class="mb-2"><a href="gelir-gider.html" class="text-decoration-none text-light"><i class="bi bi-chevron-right me-1"></i> Gelir-Gider</a></li>
+                        <li class="mb-2"><a href="hakkinda.html" class="text-decoration-none text-light"><i class="bi bi-chevron-right me-1"></i> Hakkında</a></li>
+                        <li class="mb-2"><a href="iletisim.html" class="text-decoration-none text-light"><i class="bi bi-chevron-right me-1"></i> İletişim</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-4">
+                    <h5 class="mb-3">Bülten</h5>
+                    <p class="small mb-3">Yeni özelliklerden ve güncellemelerden haberdar olmak için bültenimize abone olun.</p>
+                    <form class="d-flex">
+                        <input type="email" class="form-control" placeholder="E-posta adresiniz">
+                        <button type="submit" class="btn btn-primary ms-2">Abone Ol</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Telif Hakkı -->
+            <div class="text-center mt-4 pt-4 border-top border-secondary">
+                <p class="mb-0">© 2024 Gelir Gider Takip Uygulaması | Tüm hakları saklıdır.</p>
+                <p class="developer-signature">Geliştirici: <a href="mailto:info@gelirgider.com">Gelir Gider Takip Ekibi</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sayfa Mesajları için Toast Container -->
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+        <!-- Toastlar JavaScript ile buraya eklenecek -->
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="main.js"></script>
+    <script src="gelir-gider.js"></script>
+    <script src="gelir-gider-grafik.js"></script>
+    
+    <!-- Gelir-Gider grafiklerini düzeltmek için ek JavaScript -->
+    <!-- JavaScript -->
+    <script>
+        window.getAktifFiltreler = function() {
+            return {
+                tur: document.getElementById('filtreTur') ? document.getElementById('filtreTur').value : null,
+                kategori: document.getElementById('filtreKategori') ? document.getElementById('filtreKategori').value : null,
+                baslangicTarihi: document.getElementById('tarihBaslangic') ? document.getElementById('tarihBaslangic').value : null,
+                bitisTarihi: document.getElementById('tarihBitis') ? document.getElementById('tarihBitis').value : null,
+                minMiktar: document.getElementById('minMiktar') && document.getElementById('minMiktar').value ? parseFloat(document.getElementById('minMiktar').value) : null,
+                maxMiktar: document.getElementById('maxMiktar') && document.getElementById('maxMiktar').value ? parseFloat(document.getElementById('maxMiktar').value) : null
+            };
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Gelir-gider grafik düzeltmeleri yükleniyor...");
+
+            window.fixKategoriDagilimi = function() {
+                if (typeof window.createCategoryChart === 'function') {
+                    console.log("Kategori dağılımı grafiği fonksiyonu değiştiriliyor...");
+                    window.createCategoryChart = function(islemler) {
+                        const canvas = document.getElementById('kategoriDagilimGrafik');
+                        if (!canvas) {
+                            console.error("kategoriDagilimGrafik canvas bulunamadı");
+                            return;
+                        }
+                        const ctx = canvas.getContext('2d');
+                        if (window.kategoriChart) {
+                            window.kategoriChart.destroy();
+                        }
+                        const turSelect = document.getElementById('kategoriTipSecici');
+                        const seciliTur = turSelect ? turSelect.value : 'Gider';
+                        const filtrelenmisIslemler = islemler.filter(islem => islem.tur === seciliTur);
+                        const kategoriGruplari = {};
+                        filtrelenmisIslemler.forEach(islem => {
+                            if (!kategoriGruplari[islem.kategori]) {
+                                kategoriGruplari[islem.kategori] = 0;
+                            }
+                            kategoriGruplari[islem.kategori] += parseFloat(islem.miktar);
+                        });
+                        const labels = Object.keys(kategoriGruplari);
+                        const values = Object.values(kategoriGruplari);
+                        const bosMesaj = document.getElementById('kategoriDagilimBosGrafik');
+                        if (labels.length === 0) {
+                            bosMesaj.classList.remove('d-none');
+                            window.kategoriChart = new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: ['Veri yok'],
+                                    datasets: [{ label: 'Veri yok', data: [0], backgroundColor: ['#f8f9fa'], borderWidth: 0 }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } }
+                                }
+                            });
+                            return;
+                        }
+                        bosMesaj.classList.add('d-none');
+                        const backgroundColors = typeof generateGradientColors === 'function'
+                            ? generateGradientColors(labels.length)
+                            : Array(labels.length).fill('#38b000');
+                        const data = {
+                            labels: labels,
+                            datasets: [{
+                                label: seciliTur === 'Gelir' ? 'Gelir (₺)' : 'Gider (₺)',
+                                data: values,
+                                backgroundColor: backgroundColors,
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                borderColor: '#fff'
+                            }]
+                        };
+                        const options = {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: { callback: function(value) { return value.toLocaleString('tr-TR') + ' ₺'; } }
+                                }
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const value = context.raw || 0;
+                                            return `${value.toLocaleString('tr-TR')} ₺`;
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        window.kategoriChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: data,
+                            options: options
+                        });
+                        console.log(`Kategori grafiği oluşturuldu: ${seciliTur}`);
+                    };
+                    const turSelect = document.getElementById('kategoriTipSecici');
+                    if (turSelect) {
+                        turSelect.addEventListener('change', function() {
+                            if (typeof grafiklerOlustur === 'function') {
+                                grafiklerOlustur();
+                            }
+                        });
+                    }
+                }
+            };
+
+            window.fixAylikTrend = function() {
+                if (typeof window.createMonthlyTrendChart === 'function') {
+                    console.log("Aylık trend grafiği fonksiyonu değiştiriliyor...");
+                    window.createMonthlyTrendChart = function(islemler) {
+                        const canvas = document.getElementById('aylikTrendGrafik');
+                        if (!canvas) {
+                            console.error("aylikTrendGrafik canvas bulunamadı");
+                            return;
+                        }
+                        const ctx = canvas.getContext('2d');
+                        if (window.trendChart) {
+                            window.trendChart.destroy();
+                        }
+                        const today = new Date();
+                        const aylikVeriler = {};
+                        for (let i = 5; i >= 0; i--) {
+                            const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                            const ayKey = date.toISOString().substr(0, 7);
+                            const ayIsim = date.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
+                            aylikVeriler[ayKey] = { ayIsim, gelir: 0, gider: 0 };
+                        }
+                        islemler.forEach(islem => {
+                            try {
+                                let ayKey;
+                                if (islem.tarih) {
+                                    const dateObj = new Date(islem.tarih);
+                                    if (!isNaN(dateObj.getTime())) {
+                                        const year = dateObj.getFullYear();
+                                        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                                        ayKey = `${year}-${month}`;
+                                    }
+                                }
+                                if (ayKey && aylikVeriler[ayKey]) {
+                                    if (islem.tur === 'Gelir') {
+                                        aylikVeriler[ayKey].gelir += parseFloat(islem.miktar || 0);
+                                    } else if (islem.tur === 'Gider') {
+                                        aylikVeriler[ayKey].gider += parseFloat(islem.miktar || 0);
+                                    }
+                                }
+                            } catch (e) {
+                                console.error("Tarih işleme hatası:", islem, e);
+                            }
+                        });
+                        const labels = Object.values(aylikVeriler).map(veri => veri.ayIsim);
+                        const gelirData = Object.values(aylikVeriler).map(veri => veri.gelir);
+                        const giderData = Object.values(aylikVeriler).map(veri => veri.gider);
+                        const veriVar = gelirData.some(v => v > 0) || giderData.some(v => v > 0);
+                        const bosMesaj = document.getElementById('aylikTrendBosGrafik');
+                        if (!veriVar) {
+                            bosMesaj.classList.remove('d-none');
+                            window.trendChart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: labels,
+                                    datasets: [
+                                        { label: 'Gelir', data: Array(6).fill(0), borderColor: '#38b000', fill: true },
+                                        { label: 'Gider', data: Array(6).fill(0), borderColor: '#ff5a5f', fill: true }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    scales: { y: { beginAtZero: true } },
+                                    plugins: { legend: { display: false } }
+                                }
+                            });
+                            return;
+                        }
+                        bosMesaj.classList.add('d-none');
+                        const data = {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: 'Gelir',
+                                    data: gelirData,
+                                    borderColor: '#38b000',
+                                    backgroundColor: 'rgba(56, 176, 0, 0.1)',
+                                    borderWidth: 3,
+                                    pointBackgroundColor: '#38b000',
+                                    pointBorderColor: '#fff',
+                                    pointBorderWidth: 2,
+                                    pointRadius: 5,
+                                    pointHoverRadius: 7,
+                                    tension: 0.2,
+                                    fill: true
+                                },
+                                {
+                                    label: 'Gider',
+                                    data: giderData,
+                                    borderColor: '#ff5a5f',
+                                    backgroundColor: 'rgba(255, 90, 95, 0.1)',
+                                    borderWidth: 3,
+                                    pointBackgroundColor: '#ff5a5f',
+                                    pointBorderColor: '#fff',
+                                    pointBorderWidth: 2,
+                                    pointRadius: 5,
+                                    pointHoverRadius: 7,
+                                    tension: 0.2,
+                                    fill: true
+                                }
+                            ]
+                        };
+                        const options = {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: { callback: function(value) { return value.toLocaleString('tr-TR') + ' ₺'; } }
+                                }
+                            },
+                            plugins: {
+                                legend: { position: 'top', labels: { padding: 20, font: { size: 14 } } },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.dataset.label || '';
+                                            const value = context.raw || 0;
+                                            return `${label}: ${value.toLocaleString('tr-TR')} ₺`;
+                                        }
+                                    }
+                                }
+                            },
+                            interaction: { mode: 'index', intersect: false },
+                            animation: { duration: 1000 }
+                        };
+                        window.trendChart = new Chart(ctx, {
+                            type: 'line',
+                            data: data,
+                            options: options
+                        });
+                        console.log("Aylık trend grafiği oluşturuldu:", { labels, gelirData, giderData });
+                    };
+                }
+            };
+
+            setTimeout(() => {
+                fixKategoriDagilimi();
+                fixAylikTrend();
+                setTimeout(() => {
+                    if (typeof grafiklerOlustur === 'function') {
+                        grafiklerOlustur();
+                    }
+                }, 500);
+            }, 1000);
+
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible') {
+                    setTimeout(() => {
+                        if (typeof grafiklerOlustur === 'function') {
+                            grafiklerOlustur();
+                        }
+                    }, 500);
+                }
+            });
+
+            const gelirGiderForm = document.getElementById('gelirGiderForm');
+            if (gelirGiderForm) {
+                const originalSubmit = gelirGiderForm.onsubmit;
+                gelirGiderForm.onsubmit = function(e) {
+                    if (originalSubmit) {
+                        originalSubmit.call(this, e);
+                    }
+                    setTimeout(() => {
+                        if (typeof grafiklerOlustur === 'function') {
+                            grafiklerOlustur();
+                        }
+                    }, 1000);
+                    setTimeout(() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 300);
+                };
+            }
+        });
+    </script>
+</body>
+</html>

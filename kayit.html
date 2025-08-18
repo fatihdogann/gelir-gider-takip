@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol | Finansal Takip</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+    <style>
+        /* Şifre gücü göstergesi için ek stiller */
+        .password-strength {
+            height: 5px;
+            border-radius: 3px;
+            margin-top: 5px;
+            background-color: #ddd;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .password-strength-meter {
+            height: 100%;
+            width: 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .password-strength-text {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container py-5">
+        <div class="card auth-card">
+            <div class="auth-header">
+                <div class="app-logo">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+                <div class="brand-name">Finansal Takip</div>
+                <div class="brand-tagline">Gelir ve giderlerinizi kolayca yönetin</div>
+            </div>
+            
+            <div class="card-body">
+                <h4 class="text-center mb-4">Hesap Oluştur</h4>
+                
+                <form id="kayitForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="adSoyad" placeholder="Ad Soyad" required>
+                                <label for="adSoyad"><i class="bi bi-person me-1"></i> Ad Soyad</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="kullaniciAdi" placeholder="Kullanıcı Adı" required>
+                                <label for="kullaniciAdi"><i class="bi bi-person-badge me-1"></i> Kullanıcı Adı</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="email" placeholder="E-posta" required>
+                        <label for="email"><i class="bi bi-envelope me-1"></i> E-posta</label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="sifre" placeholder="Şifre" required>
+                                <label for="sifre"><i class="bi bi-lock me-1"></i> Şifre</label>
+                            </div>
+                            <span class="input-group-text" id="sifreGoster">
+                                <i class="bi bi-eye-slash"></i>
+                            </span>
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-strength-meter" id="passwordStrengthMeter"></div>
+                        </div>
+                        <div class="password-strength-text" id="passwordStrengthText">Şifre gücü</div>
+                        <div class="form-text">
+                            Şifreniz en az 6 karakter olmalı.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="input-group">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="sifreOnay" placeholder="Şifre Tekrar" required>
+                                <label for="sifreOnay"><i class="bi bi-lock-fill me-1"></i> Şifre Tekrar</label>
+                            </div>
+                            <span class="input-group-text" id="sifreOnayGoster">
+                                <i class="bi bi-eye-slash"></i>
+                            </span>
+                        </div>
+                        <div id="sifreEslesmeUyari" class="form-text text-danger d-none">
+                            Şifreler eşleşmiyor!
+                        </div>
+                    </div>
+                    
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="kosullarKabul" required>
+                        <label class="form-check-label" for="kosullarKabul">
+                            <a href="#" class="btn-link">Kullanım koşullarını</a> kabul ediyorum
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 py-2">
+                        <i class="bi bi-person-plus me-2"></i>Hesap Oluştur
+                    </button>
+                </form>
+                
+                <div class="divider">
+                    <div class="divider-line"></div>
+                    <div class="divider-text">veya</div>
+                    <div class="divider-line"></div>
+                </div>
+                
+                <div class="mb-3">
+                    <a href="giris.html" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Giriş Yap
+                    </a>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="index.html" class="btn-link">
+                        <i class="bi bi-arrow-left me-1"></i> Anasayfaya Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sayfa Mesajları için Toast Container -->
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+        <!-- Toastlar JavaScript ile buraya eklenecek -->
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            // Yerel Storage'ı temizle
+            localStorage.removeItem('currentPage');
+            
+            // Test Hesabı
+            testHesabiKur();
+            
+            // Şifre gücü göstergesini başlat
+            sifreGucuGostergesi();
+            
+            // Şifre göster/gizle butonları
+            setupPasswordToggle();
+            
+            // Şifre eşleşme kontrolü
+            setupPasswordMatch();
+            
+            // Kayıt formunu dinle
+            setupKayitForm();
+        });
+        
+        // Test hesabı oluşturma
+        function testHesabiKur() {
+            console.log("Test hesabı oluşturuluyor...");
+            
+            const kullanicilar = JSON.parse(localStorage.getItem('kullanicilar')) || [];
+            
+            // Test hesabının var olup olmadığını kontrol et
+            const testHesapVar = kullanicilar.some(k => k.kullaniciAdi === 'test');
+            
+            if (!testHesapVar) {
+                // Test hesabı oluştur
+                const testHesap = {
+                    adSoyad: 'Test Kullanıcı',
+                    kullaniciAdi: 'test',
+                    email: 'test@gelirgider.com',
+                    sifre: '123456',
+                    kayitTarihi: new Date().toISOString(),
+                    sonGirisTarihi: new Date().toISOString()
+                };
+                
+                kullanicilar.push(testHesap);
+                localStorage.setItem('kullanicilar', JSON.stringify(kullanicilar));
+                console.log('Test hesabı oluşturuldu.');
+            }
+        }
+        
+        // Şifre gücü göstergesi
+        function sifreGucuGostergesi() {
+            const sifreInput = document.getElementById('sifre');
+            const passwordStrengthMeter = document.getElementById('passwordStrengthMeter');
+            const passwordStrengthText = document.getElementById('passwordStrengthText');
+            
+            if (!sifreInput || !passwordStrengthMeter || !passwordStrengthText) return;
+            
+            sifreInput.addEventListener('input', function() {
+                const sifre = this.value;
+                const guc = hesaplaSifreGucu(sifre);
+                
+                // Güç seviyesine göre renk belirleme
+                let renk = '';
+                let metin = '';
+                
+                if (guc === 0) {
+                    renk = '#ddd';
+                    metin = 'Şifre gücü';
+                } else if (guc < 30) {
+                    renk = '#dc3545'; // Danger (Zayıf)
+                    metin = 'Zayıf';
+                } else if (guc < 60) {
+                    renk = '#ffc107'; // Warning (Orta)
+                    metin = 'Orta';
+                } else if (guc < 80) {
+                    renk = '#0d6efd'; // Primary (İyi)
+                    metin = 'İyi';
+                } else {
+                    renk = '#198754'; // Success (Güçlü)
+                    metin = 'Güçlü';
+                }
+                
+                // Stil ve metni güncelle
+                passwordStrengthMeter.style.width = `${guc}%`;
+                passwordStrengthMeter.style.backgroundColor = renk;
+                passwordStrengthText.textContent = metin;
+                passwordStrengthText.style.color = renk;
+            });
+        }
+        
+        // Şifre gücünü hesaplama
+        function hesaplaSifreGucu(sifre) {
+            if (!sifre) return 0;
+            
+            let puan = 0;
+            
+            // Uzunluk puanı (maksimum 30)
+            puan += Math.min(30, sifre.length * 2);
+            
+            // Karakter çeşitliliği puanı
+            if (/[a-z]/.test(sifre)) puan += 10; // Küçük harf
+            if (/[A-Z]/.test(sifre)) puan += 10; // Büyük harf
+            if (/[0-9]/.test(sifre)) puan += 10; // Rakam
+            if (/[^a-zA-Z0-9]/.test(sifre)) puan += 15; // Özel karakter
+            
+            // Karakter kombinasyonları
+            if (/[a-z]/.test(sifre) && /[A-Z]/.test(sifre)) puan += 5; // Küçük ve büyük harf
+            if ((/[a-zA-Z]/.test(sifre) && /[0-9]/.test(sifre))) puan += 5; // Harf ve rakam
+            if ((/[a-zA-Z0-9]/.test(sifre) && /[^a-zA-Z0-9]/.test(sifre))) puan += 5; // Alfanumerik ve özel karakter
+            
+            // Tekrarlanan karakter cezası
+            const tekrarlar = sifre.match(/(.)\1+/g);
+            if (tekrarlar) puan -= tekrarlar.length * 3;
+            
+            // Genel karmaşıklık
+            if (sifre.length > 8 && 
+                /[a-z]/.test(sifre) && 
+                /[A-Z]/.test(sifre) && 
+                /[0-9]/.test(sifre) && 
+                /[^a-zA-Z0-9]/.test(sifre)) {
+                puan += 20;
+            }
+            
+            return Math.max(0, Math.min(100, puan));
+        }
+        
+        // Şifre göster/gizle butonlarını ayarla
+        function setupPasswordToggle() {
+            // Şifre göster/gizle butonu
+            const sifreGoster = document.getElementById('sifreGoster');
+            if (sifreGoster) {
+                sifreGoster.addEventListener('click', function() {
+                    togglePasswordVisibility('sifre', this);
+                });
+            }
+            
+            // Şifre onay göster/gizle butonu
+            const sifreOnayGoster = document.getElementById('sifreOnayGoster');
+            if (sifreOnayGoster) {
+                sifreOnayGoster.addEventListener('click', function() {
+                    togglePasswordVisibility('sifreOnay', this);
+                });
+            }
+        }
+        
+        // Şifre görünürlüğünü değiştir
+        function togglePasswordVisibility(inputId, button) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            }
+        }
+        
+        // Şifre eşleşme kontrolünü ayarla
+        function setupPasswordMatch() {
+            const sifreInput = document.getElementById('sifre');
+            const sifreOnayInput = document.getElementById('sifreOnay');
+            const sifreEslesmeUyari = document.getElementById('sifreEslesmeUyari');
+            
+            function checkPasswordMatch() {
+                if (sifreOnayInput.value && sifreOnayInput.value !== sifreInput.value) {
+                    sifreEslesmeUyari.classList.remove('d-none');
+                    sifreOnayInput.setCustomValidity('Şifreler eşleşmiyor');
+                } else {
+                    sifreEslesmeUyari.classList.add('d-none');
+                    sifreOnayInput.setCustomValidity('');
+                }
+            }
+            
+            if (sifreInput && sifreOnayInput) {
+                sifreInput.addEventListener('input', checkPasswordMatch);
+                sifreOnayInput.addEventListener('input', checkPasswordMatch);
+            }
+        }
+        
+        // Kayıt formunu ayarla
+        function setupKayitForm() {
+            const kayitForm = document.getElementById('kayitForm');
+            
+            if (kayitForm) {
+                kayitForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Form değerlerini al
+                    const adSoyad = document.getElementById('adSoyad').value.trim();
+                    const kullaniciAdi = document.getElementById('kullaniciAdi').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const sifre = document.getElementById('sifre').value;
+                    const sifreOnay = document.getElementById('sifreOnay').value;
+                    const kosullarKabul = document.getElementById('kosullarKabul').checked;
+                    
+                    // Doğrulama
+                    if (!adSoyad || !kullaniciAdi || !email || !sifre) {
+                        mesajGoster('Lütfen tüm alanları doldurun.', 'danger');
+                        return;
+                    }
+                    
+                    if (!kosullarKabul) {
+                        mesajGoster('Devam etmek için kullanım koşullarını kabul etmelisiniz.', 'danger');
+                        return;
+                    }
+                    
+                    if (sifre !== sifreOnay) {
+                        mesajGoster('Şifreler eşleşmiyor.', 'danger');
+                        return;
+                    }
+                    
+                    if (sifre.length < 6) {
+                        mesajGoster('Şifre en az 6 karakter olmalıdır.', 'danger');
+                        return;
+                    }
+                    
+                    // Kullanıcı adı kontrolü
+                    if (!/^[a-zA-Z0-9_]+$/.test(kullaniciAdi)) {
+                        mesajGoster('Kullanıcı adı sadece harf, rakam ve alt çizgi içerebilir.', 'danger');
+                        return;
+                    }
+                    
+                    // Local Storage'dan kullanıcıları al
+                    const kullanicilar = JSON.parse(localStorage.getItem('kullanicilar')) || [];
+                    
+                    // Kullanıcı adı veya email kullanımda mı kontrol et
+                    const kullaniciAdiVar = kullanicilar.some(k => k.kullaniciAdi === kullaniciAdi);
+                    const emailVar = kullanicilar.some(k => k.email === email);
+                    
+                    if (kullaniciAdiVar) {
+                        mesajGoster('Bu kullanıcı adı zaten kullanılıyor.', 'danger');
+                        return;
+                    }
+                    
+                    if (emailVar) {
+                        mesajGoster('Bu e-posta adresi zaten kullanılıyor.', 'danger');
+                        return;
+                    }
+                    
+                    // Yeni kullanıcı oluştur
+                    const yeniKullanici = {
+                        adSoyad,
+                        kullaniciAdi,
+                        email,
+                        sifre,
+                        kayitTarihi: new Date().toISOString(),
+                        sonGirisTarihi: new Date().toISOString()
+                    };
+                    
+                    // Kullanıcıyı kaydet
+                    kullanicilar.push(yeniKullanici);
+                    localStorage.setItem('kullanicilar', JSON.stringify(kullanicilar));
+                    
+                    // Aktif kullanıcı yap
+                    localStorage.setItem('aktifKullanici', JSON.stringify(yeniKullanici));
+                    
+                    // Başarı mesajı
+                    mesajGoster('Kaydınız başarıyla oluşturuldu! Anasayfaya yönlendiriliyorsunuz.', 'success');
+                    
+                    // Anasayfaya yönlendir
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                });
+            }
+        }
+        
+        // Mesaj gösterme fonksiyonu (toast kullanarak)
+        function mesajGoster(mesaj, tip = 'success') {
+            const toastContainer = document.querySelector('.toast-container');
+            
+            // Toast HTML'i oluştur
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${tip} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            // İkon belirle
+            let icon = 'bi-check-circle-fill';
+            if (tip === 'danger') icon = 'bi-exclamation-circle-fill';
+            if (tip === 'warning') icon = 'bi-exclamation-triangle-fill';
+            if (tip === 'info') icon = 'bi-info-circle-fill';
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi ${icon} me-2"></i>
+                        ${mesaj}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Toast'u göster
+            const bsToast = new bootstrap.Toast(toast, {
+                autohide: true,
+                delay: 3000
+            });
+            
+            bsToast.show();
+            
+            // Toast kapandığında DOM'dan kaldır
+            toast.addEventListener('hidden.bs.toast', function() {
+                this.remove();
+            });
+        }
+    </script>
+</body>
+</html>
