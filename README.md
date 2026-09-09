@@ -56,7 +56,7 @@ Kişisel finansal yönetim için tasarlanmış kullanıcı dostu bir gelir-gider
 
 1. Projeyi bilgisayarınıza klonlayın:
    ```bash
-   git clone https://github.com/kullanici/gelir-gider-takip.git
+   git clone https://github.com/fatihdogann/gelir-gider-takip.git
    ```
 
 2. Proje dizinine gidin:
@@ -78,7 +78,7 @@ Kişisel finansal yönetim için tasarlanmış kullanıcı dostu bir gelir-gider
 
 ## Katkıda Bulunma
 
-1. Forklayın (`https://github.com/kullanici/gelir-gider-takip/fork`)
+1. Forklayın (`https://github.com/fatihdogann/gelir-gider-takip/fork`)
 2. Yeni bir özellik dalı oluşturun (`git checkout -b feature/YeniOzellik`)
 3. Değişikliklerinizi commit edin (`git commit -am 'Yeni özellik eklendi'`)
 4. Dalınızı push edin (`git push origin feature/YeniOzellik`)
@@ -90,4 +90,15 @@ Bu proje MIT Lisansı ile lisanslanmıştır. Daha fazla bilgi için [LICENSE](L
 
 ## İletişim
 
-Proje ile ilgili sorularınız için [issues](https://github.com/kullanici/gelir-gider-takip/issues) kısmını kullanabilirsiniz.
+Proje ile ilgili sorularınız için [issues](https://github.com/fatihdogann/gelir-gider-takip/issues) kısmını kullanabilirsiniz.
+
+---
+
+## Geliştirici
+
+**Mehmet Fatih Doğan** — backend geliştirici, güvenlik meraklısı.
+
+- 🌐 Portfolyo & iletişim: [mehmetfatihdogan.com.tr](https://mehmetfatihdogan.com.tr)
+- 💻 GitHub: [@fatihdogann](https://github.com/fatihdogann)
+
+Proje hakkında soru, hata bildirimi veya geri bildirim için [iletişim sayfamdan](https://mehmetfatihdogan.com.tr/iletisim) ulaşabilirsin.
